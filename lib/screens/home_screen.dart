@@ -33,34 +33,34 @@ class HomeScreen extends StatelessWidget {
                       .toList(),
                 ),
               ),
-              ElevatedButton.icon(
-                onPressed: () {
-                  FlutterBlue.instance.stopScan();
+              StreamBuilder<bool>(
+                stream: FlutterBlue.instance.isScanning,
+                initialData: false,
+                builder: (c, snapshot) {
+                  if (snapshot.data) {
+                    return ElevatedButton.icon(
+                      onPressed: () {
+                        FlutterBlue.instance.stopScan();
+                      },
+                      icon: Icon(Icons.stop),
+                      label: Text('Stop'),
+                    );
+                  } else {
+                    return ElevatedButton.icon(
+                      onPressed: () {
+                        FlutterBlue.instance.startScan(
+                          timeout: Duration(seconds: 4),
+                        );
+                      },
+                      icon: Icon(Icons.search),
+                      label: Text('Scan'),
+                    );
+                  }
                 },
-                icon: Icon(Icons.stop),
-                label: Text('Stop'),
               ),
             ],
           ),
         ),
-      ),
-      floatingActionButton: StreamBuilder<bool>(
-        stream: FlutterBlue.instance.isScanning,
-        initialData: false,
-        builder: (c, snapshot) {
-          if (snapshot.data) {
-            return FloatingActionButton(
-              child: Icon(Icons.stop),
-              onPressed: () => FlutterBlue.instance.stopScan(),
-              backgroundColor: Colors.red,
-            );
-          } else {
-            return FloatingActionButton(
-                child: Icon(Icons.search),
-                onPressed: () => FlutterBlue.instance
-                    .startScan(timeout: Duration(seconds: 4)));
-          }
-        },
       ),
     );
   }
@@ -73,35 +73,36 @@ class ScanResultTile extends StatelessWidget {
   final VoidCallback onTap;
 
   Widget _buildTitle(BuildContext context) {
-    if (result.device.name.length > 0) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            result.device.name,
-            overflow: TextOverflow.ellipsis,
-          ),
-          Text(
-            result.device.id.toString(),
-            style: Theme.of(context).textTheme.caption,
-          )
-        ],
-      );
-    } else {
-      return Text(result.device.id.toString());
-    }
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          result.device.name.length > 0 ? result.device.name : 'No name',
+          overflow: TextOverflow.ellipsis,
+        ),
+        Text(
+          result.device.id.toString(),
+          style: Theme.of(context).textTheme.caption,
+        )
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return ExpansionTile(
+    return ListTile(
       title: _buildTitle(context),
-      leading: Text(result.rssi.toString()),
-      trailing: ElevatedButton(
+      leading: Icon(
+        Icons.bluetooth,
+        color: Colors.blue,
+        size: 30.0,
+      ),
+      trailing: TextButton(
         child: Text('View'),
         onPressed: onTap,
       ),
+      onTap: onTap,
     );
   }
 }
