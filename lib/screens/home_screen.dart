@@ -12,49 +12,81 @@ class HomeScreen extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
+              SizedBox(
+                height: 50,
+              ),
+              Text(
+                'Bluetooth Scanner',
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                    color: Colors.grey[800],
+                    fontWeight: FontWeight.w900,
+                    fontStyle: FontStyle.italic,
+                    fontSize: 30),
+              ),
+              SizedBox(
+                height: 50,
+              ),
               StreamBuilder<List<ScanResult>>(
-                stream: FlutterBlue.instance.scanResults,
-                initialData: [],
-                builder: (c, snapshot) => Column(
-                  children: snapshot.data
-                      .map(
-                        (r) => ScanResultTile(
-                          result: r,
-                          onTap: () {
-                            print('clicked');
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    DetailsScreen(device: r.device),
+                  stream: FlutterBlue.instance.scanResults,
+                  initialData: [],
+                  builder: (c, snapshot) {
+                    if (snapshot.data.isNotEmpty) {
+                      return Column(
+                        children: snapshot.data
+                            .map(
+                              (r) => ScanResultTile(
+                                result: r,
+                                onTap: () {
+                                  print('clicked');
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          DetailsScreen(device: r.device),
+                                    ),
+                                  );
+                                },
                               ),
-                            );
-                          },
+                            )
+                            .toList(),
+                      );
+                    } else {
+                      return Text(
+                        'No devices found!',
+                        style: TextStyle(
+                          color: Colors.black54,
                         ),
-                      )
-                      .toList(),
-                ),
+                      );
+                    }
+                  }),
+              SizedBox(
+                height: 50,
               ),
               StreamBuilder<bool>(
                 stream: FlutterBlue.instance.isScanning,
                 initialData: false,
                 builder: (c, snapshot) {
                   if (snapshot.data) {
-                    return ElevatedButton.icon(
-                      onPressed: () {
-                        FlutterBlue.instance.stopScan();
-                      },
-                      icon: Icon(Icons.stop),
-                      label: Text('STOP SCANNING'),
+                    return Center(
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          FlutterBlue.instance.stopScan();
+                        },
+                        icon: Icon(Icons.stop),
+                        label: Text('STOP SCANNING'),
+                      ),
                     );
                   } else {
-                    return ElevatedButton.icon(
-                      onPressed: () {
-                        FlutterBlue.instance.startScan(
-                          timeout: Duration(seconds: 4),
-                        );
-                      },
-                      icon: Icon(Icons.search),
-                      label: Text('SCAN FOR DEVICES'),
+                    return Center(
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          FlutterBlue.instance.startScan(
+                            timeout: Duration(seconds: 4),
+                          );
+                        },
+                        icon: Icon(Icons.search),
+                        label: Text('SCAN FOR DEVICES'),
+                      ),
                     );
                   }
                 },
