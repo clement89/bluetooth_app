@@ -1,3 +1,4 @@
+import 'package:bluetooth_app/screens/details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 
@@ -24,7 +25,7 @@ class HomeScreen extends StatelessWidget {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    DeviceScreen(device: r.device),
+                                    DetailsScreen(device: r.device),
                               ),
                             );
                           },
@@ -43,7 +44,7 @@ class HomeScreen extends StatelessWidget {
                         FlutterBlue.instance.stopScan();
                       },
                       icon: Icon(Icons.stop),
-                      label: Text('Stop'),
+                      label: Text('STOP SCANNING'),
                     );
                   } else {
                     return ElevatedButton.icon(
@@ -53,7 +54,7 @@ class HomeScreen extends StatelessWidget {
                         );
                       },
                       icon: Icon(Icons.search),
-                      label: Text('Scan'),
+                      label: Text('SCAN FOR DEVICES'),
                     );
                   }
                 },
@@ -103,32 +104,6 @@ class ScanResultTile extends StatelessWidget {
         onPressed: onTap,
       ),
       onTap: onTap,
-    );
-  }
-}
-
-class DeviceScreen extends StatelessWidget {
-  const DeviceScreen({@required this.device});
-
-  final BluetoothDevice device;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'DETAILS',
-          style: TextStyle(
-            color: Colors.black,
-          ),
-        ),
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Center(child: Text('${device.id}')),
-        ],
-      ),
     );
   }
 }

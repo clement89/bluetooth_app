@@ -1,4 +1,3 @@
-import 'package:bluetooth_app/screens/details_screen.dart';
 import 'package:bluetooth_app/screens/home_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -44,7 +43,6 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: kReleaseMode ? true : false,
       routes: {
         HomeScreen.id: (context) => HomeScreen(),
-        DetailsScreen.id: (context) => DetailsScreen(),
       },
     );
   }
